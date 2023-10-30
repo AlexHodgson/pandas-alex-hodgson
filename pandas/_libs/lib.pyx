@@ -2315,6 +2315,14 @@ def maybe_convert_numeric(
         float64_t fval
         bint allow_null_in_int = convert_to_masked_nullable
 
+    # Validate separators
+    if len(thousands) > 1:
+        raise ValueError("Thousands separator must have length 1")
+    if len(decimal) > 1:
+        raise ValueError("Decimal separator must have length 1")
+    if thousands == decimal:
+        raise ValueError("Decimal and thousand separators must not be the same")
+
     for i in range(n):
         val = values[i]
         # We only want to disable NaNs showing as float if
@@ -2390,6 +2398,11 @@ def maybe_convert_numeric(
             seen.float_ = True
         else:
             try:
+                if thousands != '':
+                    val = val.replace(thousands, '')
+                if decimal != '.':
+                    val = val.replace(decimal, '.')
+            
                 floatify(val, &fval, &maybe_int)
 
                 if fval in na_values:
