@@ -44,6 +44,8 @@ def to_numeric(
     errors: DateTimeErrorChoices = "raise",
     downcast: Literal["integer", "signed", "unsigned", "float"] | None = None,
     dtype_backend: DtypeBackend | lib.NoDefault = lib.no_default,
+    thousands='',
+    decimal='.'
 ):
     """
     Convert argument to a numeric type.
@@ -225,6 +227,8 @@ def to_numeric(
                 coerce_numeric=coerce_numeric,
                 convert_to_masked_nullable=dtype_backend is not lib.no_default
                 or isinstance(values_dtype, StringDtype),
+                thousands,
+                decimal
             )
         except (ValueError, TypeError):
             if errors == "raise":
